@@ -45,7 +45,7 @@ async def on_member_update(before,after):
         Time = datetime.datetime.now()
         minute = Time.minute if Time.minute >= 10 else '0' + str(Time.minute)
         channel = client.get_channel(555040966525059072)
-        await channel.send(f"```{before.name} : {before.status} --> {after.status} at {Time.hour}:{minute}```")
+        await channel.send(f"```asciidoc\n= {before.name} : {before.status} --> {after.status} at {Time.hour}:{minute}```")
 
 @client.event
 async def on_reaction_add(reaction,user):
@@ -182,6 +182,5 @@ async def stopwatch(ctx):
     Current_Time = datetime.datetime.now()
     await Msg.delete()
     await ctx.channel.send(f"Stopwatch has ended, {int((Current_Time-Start_Time).total_seconds())} seconds have passed")
-    
-client.run(os.getenv('TOKEN'))
 
+client.run(os.getenv('TOKEN'))
