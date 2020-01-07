@@ -1,0 +1,5 @@
+asyncio==3.4.3
+discord==1.0.1
+discord.py==1.2.5
+requests==2.18.4
+pynacl==1.2.1
