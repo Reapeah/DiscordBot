@@ -15,12 +15,13 @@ from datetime import datetime as dt,timedelta
 
 
 client = commands.Bot(command_prefix = "&")
+client.remove_command('help')
 
 @client.event
 async def on_ready():
     print("$$$$$")
     global Start_Time
-    activity = discord.Game(name="music PepeJam")
+    activity = discord.Game(name="dead")
     await client.change_presence(status=discord.Status.online, activity=activity)
     Start_Time = datetime.datetime.now()
 
@@ -44,7 +45,7 @@ async def on_member_update(before,after):
         Time = datetime.datetime.now()
         minute = Time.minute if Time.minute >= 10 else '0' + str(Time.minute)
         channel = client.get_channel(555040966525059072)
-        await channel.send("```{} : {} --> {} at {}:{}```".format(before.name,before.status,after.status,Time.hour,minute))
+        await channel.send(f"```{before.name} : {before.status} --> {after.status} at {Time.hour}:{minute}```")
 
 @client.event
 async def on_reaction_add(reaction,user):
@@ -56,7 +57,14 @@ async def on_reaction_add(reaction,user):
 async def uptime(ctx):
     Current_Time = datetime.datetime.now()
     Time = dt(1,1,1) + timedelta(seconds=int((Current_Time - Start_Time).total_seconds()))
-    await channel.send("```DAYS:HOURS:MIN:SEC\n{}:{}:{}:{}```".format(Time.day-1,Time.hour,Time.minute,Time.second))
+    await channel.send(f"```DAYS:HOURS:MIN:SEC\n{Time.day-1}:{Time.hour}:{Time.minute}:{Time.second}```")
+@client.command()
+async def help(ctx):
+    RemindMeExample = "&remindme 20 write help command"
+    CountdownExample = "&countdown 5"
+    Quotes = "```"
+    await ctx.channel.send(f"{Quotes}yaml\n&remindme 'minutes' 'text' --> example --> {RemindMeExample}\n&TTT\n&countdown 'minutes' --> example --> {CountdownExample}\n&killingfloor2\n&stopwatch\n&uptime{Quotes}")
+
 
 @client.command()
 async def remindme(ctx,*message):
@@ -71,10 +79,10 @@ async def remindme(ctx,*message):
         else:
             Time = TimeT
             Time_Value = "minute(s)"
-        msg = await channel.send("Noted, I will message you in {} {}".format(int(Time),Time_Value))
+        msg = await channel.send(f"Noted, I will message you in {int(Time)} {Time_Value}")
         await asyncio.sleep(float(TimeT*60))
         await msg.delete()
-        await channel.send("```{}``` \n <@{}>".format(Content,ctx.author.id))
+        await channel.send(f"```{Content}``` \n <@{ctx.author.id}>")
     except:
         await channel.send('```Syntax = &remindme "Number of minutes" "Message you want sent to you"```\nEnter a valid number')
 
@@ -100,7 +108,7 @@ async def TTT(ctx):
                 row1=''.join(tic_tac_toe[:3])
                 row2=''.join(tic_tac_toe[3:6])
                 row3=''.join(tic_tac_toe[6:9])
-                To_Say = "{}\n{}\n{}\n".format(row1,row2,row3)
+                To_Say = f"{row1}\n{row2}\n{row3}\n"
                 GameBoard = await channel.send(To_Say)
                 return GameBoard
     def Assign(Board,Input,Player):
@@ -146,7 +154,7 @@ async def TTT(ctx):
 
             Exit = await Win(Board)
             if Exit:
-                await channel.send("{} is the winner".format(Player))
+                await channel.send(f"{Player} is the winner")
                 break
             elif len(Used_nums) >=9:
                 await channel.send("Draw")
@@ -156,16 +164,16 @@ async def TTT(ctx):
 async def countdown(ctx,message):
     try:
         Time = float(message)
-        Msg = await ctx.channel.send("Countdown of {} seconds has started".format(int(Time*60)))
+        Msg = await ctx.channel.send(f"Countdown of {Time} minute(s) has started")
         await asyncio.sleep(float(Time)*60)
         await Msg.delete()
-        await ctx.channel.send("Countdown of {} seconds has ended!".format(int(Time*60)))
+        await ctx.channel.send(f"<@{ctx.author.id}> - Countdown of {Time} minute(s) has ended!")
     except:
         await ctx.channel.send("Invalid input")
 
 @client.command()
 async def stopwatch(ctx):
-    Msg = await ctx.channel.send("Stopwatch has begun")
+    Msg = await ctx.channel.send("Stopwatch has begun, type End Stopwatch to end it")
     Start_Time = datetime.datetime.now()
     Stop = await client.wait_for('message')
     print("Hello {}".format(Stop.author))
@@ -173,6 +181,7 @@ async def stopwatch(ctx):
         Stop = await client.wait_for('message')
     Current_Time = datetime.datetime.now()
     await Msg.delete()
-    await ctx.channel.send("Stopwatch has ended, {} seconds have passed".format(int((Current_Time-Start_Time).total_seconds())))
-
+    await ctx.channel.send(f"Stopwatch has ended, {int((Current_Time-Start_Time).total_seconds())} seconds have passed")
+    
 client.run(os.getenv('TOKEN'))
+
