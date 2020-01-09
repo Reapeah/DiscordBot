@@ -91,7 +91,7 @@ async def poll(ctx):
         for temp in options:
             await poll.add_reaction(numbers[counter])
             counter+=1
-        await asyncio.sleep(5)
+        await asyncio.sleep(60)
 
         #Getting reactions
         message = await channel.fetch_message(poll.id)
@@ -145,13 +145,27 @@ async def uptime(ctx):
     Current_Time = datetime.datetime.now()
     Time = dt(1,1,1) + timedelta(seconds=int((Current_Time - Start_Time).total_seconds()))
     await channel.send(f"```DAYS:HOURS:MIN:SEC\n{Time.day-1}:{Time.hour}:{Time.minute}:{Time.second}```")
+
 @client.command()
 async def help(ctx):
     RemindMeExample = "&remindme 20 write help command"
     CountdownExample = "&countdown 5"
-    Quotes = "```"
-    await ctx.channel.send(f"{Quotes}yaml\n&remindme 'minutes' 'text' --> example --> {RemindMeExample}\n&TTT\n&countdown 'minutes' --> example --> {CountdownExample}\n&killingfloor2\n&stopwatch\n&uptime{Quotes}")
+    embed = discord.Embed(
+        title = "Available commands",
+        colour = discord.Colour.blue()
+    )
+    embed.set_footer(text="Powered by a very fast hamster")
+    embed.set_thumbnail(url=f"https://cdn.discordapp.com/avatars/{ctx.author.id}/{ctx.author.avatar}.png?size=1024")
+    embed.set_author(name= f"Called by {ctx.author.display_name}")
+    embed.add_field(name=f"**&TTT**", value=f"**&TTT**", inline= False)
+    embed.add_field(name=f"**&uptime**", value=f"**&uptime**", inline= False)
+    embed.add_field(name=f"**&stopwatch**", value=f"**&stopwatch**", inline= False)
+    embed.add_field(name=f"**&countdown**", value=f"**{CountdownExample}**", inline= False)
+    embed.add_field(name=f"**&killingfloor2**", value=f"**&killingfloor2**", inline= False)
+    embed.add_field(name="**&remindme**", value=f"**{RemindMeExample}**", inline= False)
+    embed.add_field(name=f"**&poll**", value=f"**&poll --> Name of poll --> Option 1 | Option 2 | Option 3**", inline= False)
 
+    await ctx.channel.send(embed=embed)
 
 @client.command()
 async def remindme(ctx,*message):
