@@ -5,6 +5,7 @@ from discord.ext import commands
 from discord.ext.commands import Bot
 import asyncio
 import random
+import numpy as np
 import os
 import time
 import datetime
@@ -46,6 +47,92 @@ async def on_member_update(before,after):
         minute = Time.minute if Time.minute >= 10 else '0' + str(Time.minute)
         channel = client.get_channel(555040966525059072)
         await channel.send(f"```asciidoc\n= {before.name} : {before.status} --> {after.status} at {Time.hour}:{minute}```")
+
+@client.command()
+async def poll(ctx):
+    try:
+        numbers = ["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟","0️⃣"]
+        counter = 0
+        votes = []
+        winners = []
+        #Time = float(message)
+
+        #User input goes here
+        botmsg = await ctx.channel.send("Enter poll title")
+        title = await client.wait_for('message')
+        while title.author != ctx.message.author:
+            title = await client.wait_for('message')
+        await title.delete()
+        await botmsg.delete()
+        botmsg = await ctx.channel.send("Enter poll options seperated by |")
+        msg = await client.wait_for('message')
+        while msg.author != ctx.message.author:
+            msg = await client.wait_for('message')
+        await msg.delete()
+        await botmsg.delete()
+        #Creating poll options
+        options = msg.content.split("|")
+        if len(options) > 9:
+            await ctx.channel.send("Limited to 9 inputs")
+            return 0;
+        embed = discord.Embed(
+            title = title.content,
+            colour = discord.Colour.blue()
+        )
+        embed.set_footer(text="Powered by Monster Energy ☠")
+        embed.set_author(name= f"Poll made by {ctx.author.display_name}")
+        for i in range(0,len(options)):
+            temp = options[i].lstrip(' ')
+            embed.add_field(name=f"Option #{i+1}", value=f"{temp}", inline= True)
+            votes.append(0)
+        poll = await ctx.channel.send(embed=embed)
+
+        #Adding reactions
+        for temp in options:
+            await poll.add_reaction(numbers[counter])
+            counter+=1
+        await asyncio.sleep(5)
+
+        #Getting reactions
+        message = await channel.fetch_message(poll.id)
+        for reaction in message.reactions:
+            async for user in reaction.users():
+                if user != poll.author:
+                    for i in range(0,len(numbers)):
+                        if reaction.emoji == numbers[i]:
+                            votes[i]+=1
+
+        ind = np.argmax(votes)
+        maxVal = max(votes)
+
+        def combine(input,numbers):
+            combiner = " "
+            emote_list = []
+            for i in range(0,len(input)):
+                index = int(input[i])-1
+                emote_list.append(numbers[index])
+            return(combiner.join(emote_list))
+
+        for i in range(0,len(votes)):
+            if votes[i] == maxVal:
+                winners.append(str(i+1))
+
+
+        winner = combine(winners,numbers)
+        if(len(winners)) > 1:
+            embeded = discord.Embed(
+                title = f"Tie between options {winner} with {maxVal} vote(s)",
+                colour = discord.Colour.blue()
+            )
+            await ctx.channel.send(embed=embeded)
+        else:
+            embeded = discord.Embed(
+                title = f"The winner is option {winner} with {maxVal} vote(s)",
+                colour = discord.Colour.blue()
+            )
+            await ctx.channel.send(embed=embeded)
+    except:
+        await ctx.channel.send("Something went wrong")
 
 @client.event
 async def on_reaction_add(reaction,user):
