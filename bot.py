@@ -18,6 +18,20 @@ from datetime import datetime as dt,timedelta
 client = commands.Bot(command_prefix = "&")
 client.remove_command('help')
 
+def createEmbed(CustomTitle,Footer,User,Thumbnail,NumOfFields,Author,Field,Inline):
+    print("made it")
+    embed = discord.Embed(
+        title = CustomTitle,
+        colour = discord.Colour.blue()
+    )
+    embed.set_footer(text= Footer)
+    embed.set_author(name= Author)
+    embed.set_thumbnail(url= Thumbnail)
+
+    for i in range(0,NumOfFields):
+        embed.add_field(name=f"**{Field[i][0]}**", value=f"**{Field[i][1]}**", inline= Inline)
+    return embed
+
 @client.event
 async def on_ready():
     print("$$$$$")
@@ -43,11 +57,35 @@ async def on_message(message):
 async def on_member_update(before,after):
     server = client.get_guild(212958936972656640)
     if before.guild == server:
-        Time = datetime.datetime.now()
-        minute = Time.minute if Time.minute >= 10 else '0' + str(Time.minute)
-        channel = client.get_channel(555040966525059072)
-        await channel.send(f"```asciidoc\n= {before.name} : {before.status} --> {after.status} at {Time.hour}:{minute}```")
+        if before.status != after.status:
+            Time = datetime.datetime.now()
+            minute = Time.minute if Time.minute >= 10 else '0' + str(Time.minute)
+            channel = client.get_channel(555040966525059072)
 
+            def CheckStatus(Status):
+                if Status == 'idle':
+                    newStatus = ":orange_circle:"
+                elif Status == 'online':
+                    newStatus = ":green_circle:"
+                elif Status == 'offline':
+                    newStatus = ':black_circle:'
+                elif Status == 'dnd':
+                    newStatus = ':red_circle:'
+                return newStatus
+            BStatus = CheckStatus(str(before.status))
+            AStatus = CheckStatus(str(after.status))
+
+            User = f"{before.name}"
+            Inline = True
+            Footer = f"@{Time.hour}:{minute}"
+            Thumbnail = f"https://cdn.discordapp.com/avatars/{before.id}/{before.avatar}.png?size=1024"
+            FirstField = ["Before",f"{BStatus} "]
+            SecondField = ["After",f"{AStatus} "]
+            Field = []
+            Field.append(FirstField)
+            Field.append(SecondField)
+            embed = createEmbed(User,Footer,'',Thumbnail,2,'',Field,Inline)
+            await channel.send(embed=embed)
 @client.command()
 async def poll(ctx):
     try:
@@ -55,7 +93,6 @@ async def poll(ctx):
         counter = 0
         votes = []
         winners = []
-        #Time = float(message)
 
         #User input goes here
         botmsg = await ctx.channel.send("Enter poll title")
@@ -70,28 +107,29 @@ async def poll(ctx):
             msg = await client.wait_for('message')
         await msg.delete()
         await botmsg.delete()
+
         #Creating poll options
         options = msg.content.split("|")
         if len(options) > 9:
             await ctx.channel.send("Limited to 9 inputs")
             return 0;
-        embed = discord.Embed(
-            title = title.content,
-            colour = discord.Colour.blue()
-        )
-        embed.set_footer(text="Powered by Monster Energy ☠")
-        embed.set_author(name= f"Poll made by {ctx.author.display_name}")
+        Footer = "Powered by Monster Energy ☠"
+        Author = f"Poll made by {ctx.author.display_name}"
+        Field = []
+        Inline = True
         for i in range(0,len(options)):
             temp = options[i].lstrip(' ')
-            embed.add_field(name=f"**Option #{i+1}**", value=f"**{temp}**", inline= True)
+            AppendThis = [f"Option #{i+1}",f"{temp}"]
+            Field.append(AppendThis)
             votes.append(0)
+        embed = createEmbed(title.content,Footer,'','',len(options),Author,Field,Inline)
         poll = await ctx.channel.send(embed=embed)
 
         #Adding reactions
         for temp in options:
             await poll.add_reaction(numbers[counter])
             counter+=1
-        await asyncio.sleep(60)
+        await asyncio.sleep(5)
 
         #Getting reactions
         message = await channel.fetch_message(poll.id)
@@ -101,8 +139,9 @@ async def poll(ctx):
                     for i in range(0,len(numbers)):
                         if reaction.emoji == numbers[i]:
                             votes[i]+=1
-        ind = np.argmax(votes)
+
         maxVal = max(votes)
+
         def combine(input,numbers):
             combiner = " "
             emote_list = []
@@ -118,16 +157,12 @@ async def poll(ctx):
 
         winner = combine(winners,numbers)
         if(len(winners)) > 1:
-            embeded = discord.Embed(
-                title = f"Tie between options {winner} with {maxVal} vote(s)",
-                colour = discord.Colour.blue()
-            )
+            Title = f"Tie between options {winner} with {maxVal} vote(s)"
+            embeded = createEmbed(Title,'','','',0,'','',True)
             await ctx.channel.send(embed=embeded)
         else:
-            embeded = discord.Embed(
-                title = f"The winner is option {winner} with {maxVal} vote(s)",
-                colour = discord.Colour.blue()
-            )
+            Title = f"The winner is option {winner} with {maxVal} vote(s)"
+            embeded = createEmbed(Title,'','','',0,'','',True)
             await ctx.channel.send(embed=embeded)
     except:
         await ctx.channel.send("Something went wrong")
