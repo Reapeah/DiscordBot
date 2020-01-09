@@ -129,7 +129,7 @@ async def poll(ctx):
         for temp in options:
             await poll.add_reaction(numbers[counter])
             counter+=1
-        await asyncio.sleep(5)
+        await asyncio.sleep(60)
 
         #Getting reactions
         message = await channel.fetch_message(poll.id)
