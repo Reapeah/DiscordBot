@@ -83,7 +83,7 @@ async def poll(ctx):
         embed.set_author(name= f"Poll made by {ctx.author.display_name}")
         for i in range(0,len(options)):
             temp = options[i].lstrip(' ')
-            embed.add_field(name=f"Option #{i+1}", value=f"{temp}", inline= True)
+            embed.add_field(name=f"**Option #{i+1}**", value=f"**{temp}**", inline= True)
             votes.append(0)
         poll = await ctx.channel.send(embed=embed)
 
@@ -91,7 +91,7 @@ async def poll(ctx):
         for temp in options:
             await poll.add_reaction(numbers[counter])
             counter+=1
-        await asyncio.sleep(3)
+        await asyncio.sleep(60)
 
         #Getting reactions
         message = await channel.fetch_message(poll.id)
@@ -101,10 +101,8 @@ async def poll(ctx):
                     for i in range(0,len(numbers)):
                         if reaction.emoji == numbers[i]:
                             votes[i]+=1
-        print("np test")
         ind = np.argmax(votes)
         maxVal = max(votes)
-        print("test passed")
         def combine(input,numbers):
             combiner = " "
             emote_list = []
