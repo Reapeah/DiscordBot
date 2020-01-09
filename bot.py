@@ -91,7 +91,7 @@ async def poll(ctx):
         for temp in options:
             await poll.add_reaction(numbers[counter])
             counter+=1
-        await asyncio.sleep(60)
+        await asyncio.sleep(3)
 
         #Getting reactions
         message = await channel.fetch_message(poll.id)
@@ -101,10 +101,10 @@ async def poll(ctx):
                     for i in range(0,len(numbers)):
                         if reaction.emoji == numbers[i]:
                             votes[i]+=1
-
+        print("np test")
         ind = np.argmax(votes)
         maxVal = max(votes)
-
+        print("test passed")
         def combine(input,numbers):
             combiner = " "
             emote_list = []
