@@ -19,7 +19,6 @@ client = commands.Bot(command_prefix = "&")
 client.remove_command('help')
 
 def createEmbed(CustomTitle,Footer,User,Thumbnail,NumOfFields,Author,Field,Inline):
-    print("made it")
     embed = discord.Embed(
         title = CustomTitle,
         colour = discord.Colour.blue()
