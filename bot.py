@@ -85,6 +85,13 @@ async def on_member_update(before,after):
             Field.append(SecondField)
             embed = createEmbed(User,Footer,'',Thumbnail,2,'',Field,Inline)
             await channel.send(embed=embed)
+
+@client.command()
+async def send(ctx,message):
+    channel = client.get_channel(286178277985484801)
+    if str(ctx.author) == "Reapeah#9864":
+        await channel.send(message)
+
 @client.command()
 async def poll(ctx):
     try:
