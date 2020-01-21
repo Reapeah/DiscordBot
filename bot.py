@@ -60,7 +60,7 @@ async def on_member_update(before,after):
             Time = datetime.datetime.now()
             minute = Time.minute if Time.minute >= 10 else '0' + str(Time.minute)
             channel = client.get_channel(555040966525059072)
-
+            print(f"{before.name} : {before.status} --> {after.status} ")
             def CheckStatus(Status):
                 if Status == 'idle':
                     newStatus = ":orange_circle:"
