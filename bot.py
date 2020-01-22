@@ -43,7 +43,8 @@ async def on_ready():
 async def on_message(message):
     global channel
     channel = message.channel
-    print('{} - {}'.format(message.author,str(message.content)))
+    if message.channel.id != 555040966525059072:
+        print('{} - {}'.format(message.author,str(message.content)))
     if 'kms' in message.content:
         await channel.send("Do it pussy you won't")
     if message.content.upper() == 'MA':
