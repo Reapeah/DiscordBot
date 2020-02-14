@@ -50,7 +50,10 @@ async def on_message(message):
     if message.content.upper() == 'MA':
         await channel.send("ma mia")
     if message.content.startswith("I'm ") or message.content.startswith("I am "):
-        await channel.send(f"Hi {str(message.content)[3:]}! I'm Dad <:peepoDab:639947762120785930>")
+        if message.content.startswith("I'm "):
+            await channel.send(f"Hi {str(message.content)[4:]}! I'm Dad <:peepoDab:639947762120785930>")
+        else:
+            await channel.send(f"Hi {str(message.content)[5:]}! I'm Dad <:peepoDab:639947762120785930>")
     if 'ocelto' in message.content and ':ocelto:' not in message.content:
         await channel.send("<:ocelto:501865489442799616>")
     await client.process_commands(message)
