@@ -49,6 +49,8 @@ async def on_message(message):
         await channel.send("Do it pussy you won't")
     if message.content.upper() == 'MA':
         await channel.send("ma mia")
+    if message.content.startswith("I'm "):
+        await channel.send(f"**Hi {str(message.content)[2:]}! I'm Dad <:peepoDab:639947762120785930>**")
     if 'ocelto' in message.content and ':ocelto:' not in message.content:
         await channel.send("<:ocelto:501865489442799616>")
     await client.process_commands(message)
