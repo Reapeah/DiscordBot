@@ -31,6 +31,14 @@ def createEmbed(CustomTitle,Footer,User,Thumbnail,NumOfFields,Author,Field,Inlin
         embed.add_field(name=f"**{Field[i][0]}**", value=f"**{Field[i][1]}**", inline= Inline)
     return embed
 
+def OwO(content):
+    sentence = ""
+    for letter in content:
+        if letter == "r" or letter =="l":
+            letter = "w"
+        sentence+=letter
+    return sentence
+
 @client.event
 async def on_ready():
     print("$$$$$")
@@ -92,11 +100,6 @@ async def on_member_update(before,after):
             embed = createEmbed(User,Footer,'',Thumbnail,2,'',Field,Inline)
             await channel.send(embed=embed)
 
-@client.command()
-async def send(ctx,message):
-    channel = client.get_channel(286178277985484801)
-    if str(ctx.author) == "Reapeah#9864":
-        await channel.send(message)
 
 @client.command()
 async def poll(ctx):
@@ -182,9 +185,11 @@ async def poll(ctx):
 @client.event
 async def on_reaction_add(reaction,user):
     message = reaction.message
-    if reaction.emoji != "✉️":
+    ignored =  ["✉️","🐺"]
+    if reaction.emoji not in ignored:
         await message.add_reaction(reaction.emoji)
-
+    if reaction.emoji == "🐺":
+        await reaction.message.channel.send(OwO(str(reaction.message.content)))
 @client.command()
 async def uptime(ctx):
     Current_Time = datetime.datetime.now()
