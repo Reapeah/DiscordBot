@@ -52,7 +52,7 @@ async def on_ready():
 async def roll(ctx):
     await ctx.channel.send(f"**{ctx.author.nick} has rolled a {random.randint(1,101)}**")
 
-    
+
 @client.event
 async def on_message(message):
     global channel
@@ -214,6 +214,7 @@ async def help(ctx):
     embed.set_thumbnail(url=f"https://cdn.discordapp.com/avatars/{ctx.author.id}/{ctx.author.avatar}.png?size=1024")
     embed.set_author(name= f"Called by {ctx.author.display_name}")
     embed.add_field(name=f"**&TTT**", value=f"**&TTT**", inline= False)
+    embed.add_field(name=f"**&roll**", value=f"**&roll**", inline= False)
     embed.add_field(name=f"**&uptime**", value=f"**&uptime**", inline= False)
     embed.add_field(name=f"**&stopwatch**", value=f"**&stopwatch**", inline= False)
     embed.add_field(name=f"**&countdown**", value=f"**{CountdownExample}**", inline= False)
