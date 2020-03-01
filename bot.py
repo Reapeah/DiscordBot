@@ -47,6 +47,12 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=activity)
     Start_Time = datetime.datetime.now()
 
+
+@client.command()
+async def roll(ctx):
+    await ctx.channel.send(f"**{ctx.author.nick} has rolled a {random.randint(1,101)}**")
+
+    
 @client.event
 async def on_message(message):
     global channel
@@ -183,7 +189,7 @@ async def poll(ctx):
         await ctx.channel.send("Something went wrong")
 
 @client.event
-async def on_reaction_add(reaction,user):
+async def on_raw_reaction_add(reaction,user):
     message = reaction.message
     ignored =  ["✉️","🐺"]
     if reaction.emoji not in ignored:
