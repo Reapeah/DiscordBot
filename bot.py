@@ -189,7 +189,7 @@ async def poll(ctx):
         await ctx.channel.send("Something went wrong")
 
 @client.event
-async def on_raw_reaction_add(reaction,user):
+async def on_reaction_add(reaction,user):
     message = reaction.message
     ignored =  ["✉️","🐺"]
     if reaction.emoji not in ignored:
