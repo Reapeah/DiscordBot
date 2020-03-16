@@ -60,13 +60,13 @@ async def roll(ctx,*args):
                 max = int(args[1])
             await ctx.channel.send(f"**{ctx.author.nick} has rolled a {random.randint(min,max)}**")
         else:
-            await ctx.channel.send("Bad Input, type &roll ? for help")
+            await ctx.channel.send("**Bad Input, type &roll ? for help**")
     elif len(args) == 1:
         if args[0].isnumeric():
             if int(args[0]) >= 0:
                 await ctx.channel.send(f"**{ctx.author.nick} has rolled a {random.randint(0,int(args[0]))}**")
             else:
-                await ctx.channel.send("Bad Input, type &roll ? for help")
+                await ctx.channel.send("**Bad Input, type &roll ? for help**")
         elif args[0] == '?':
             embed = discord.Embed(
                 title = "&roll",
@@ -82,7 +82,7 @@ async def roll(ctx,*args):
     elif len(args) == 0:
         await ctx.channel.send(f"**{ctx.author.nick} has rolled a {random.randint(1,101)}**")
     else:
-        await ctx.channel.send("Bad Input, type &roll ? for help")
+        await ctx.channel.send("**Bad Input, type &roll ? for help**")
 
 
 @client.event
