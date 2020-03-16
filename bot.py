@@ -50,7 +50,40 @@ async def on_ready():
 
 @client.command()
 async def roll(ctx):
-    await ctx.channel.send(f"**{ctx.author.nick} has rolled a {random.randint(1,101)}**")
+    async def roll(ctx,*args):
+        if len(args) == 2:
+            if args[0].isnumeric() and args[1].isnumeric():
+                if int(args[0]) > int(args[1]) :
+                    min = int(args[1])
+                    max = int(args[0])
+                else:
+                    min = int(args[0])
+                    max = int(args[1])
+                await ctx.channel.send(f"**{ctx.author.nick} has rolled a {random.randint(min,max)}**")
+            else:
+                await ctx.channel.send("Bad Input, type &roll ? for help")
+        elif len(args) == 1:
+            if args[0].isnumeric():
+                if int(args[0]) >= 0:
+                    await ctx.channel.send(f"**{ctx.author.nick} has rolled a {random.randint(0,int(args[0]))}**")
+                else:
+                    await ctx.channel.send("Bad Input, type &roll ? for help")
+            elif args[0] == '?':
+                embed = discord.Embed(
+                    title = "&roll",
+                    colour = discord.Colour.blue()
+                )
+                embed.add_field(name=f"**&roll #1 #2**", value="**Roll in range of #1 & #2**", inline= False)
+                embed.add_field(name=f"**&roll #1**", value="**Roll in range of 0 & #1**", inline= False)
+                embed.add_field(name=f"**&roll**", value="**Roll in range of 1 & 100**", inline= False)
+                await ctx.channel.send(embed=embed)
+
+            else:
+                await ctx.channel.send("**Bad Input, type &roll ? for help**")
+        elif len(args) == 0:
+            await ctx.channel.send(f"**{ctx.author.nick} has rolled a {random.randint(1,101)}**")
+        else:
+            await ctx.channel.send("Bad Input, type &roll ? for help")
 
 
 @client.event
