@@ -47,6 +47,12 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=activity)
     Start_Time = datetime.datetime.now()
 
+@client.command()
+async def cs(ctx):
+    msg = await ctx.channel.send("<@&691037783074144296> cs?")
+    await msg.add_reaction('🇾')
+    await msg.add_reaction('🇳')
+
 
 @client.command()
 async def roll(ctx,*args):
