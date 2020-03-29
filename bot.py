@@ -54,19 +54,19 @@ async def cs(ctx):
     await msg.add_reaction('🇳')
 
 @client.command()
-async def simon(ctx,*args):
+async def simon(ctx):
+    gameLoop = True
     past_index = 5
-    if len(args) == 1 and args[0].isnumeric():
-        level = int(args[0])
-    else:
-        level = 5
+    level = 1
     Pattern = []
     Colors = []
     squares = ['🟩','🟥','NULL','🟨','🟦','⬜']
     DefBoard = ['🟩','🟥','\n','🟨','🟦']
     Board = ['🟩','🟥','\n','🟨','🟦']
     Cube = await ctx.channel.send("".join(DefBoard))
-    for i in range(level):
+    msg = await ctx.channel.send("Starting in 3 seconds")
+    while gameLoop:
+
         index = random.randint(0,4)
         while index == past_index or index == 2:
             index = random.randint(0,4)
@@ -81,23 +81,30 @@ async def simon(ctx,*args):
         Colors.append(value)
         Pattern.append(str(index))
         past_index = index
-    await asyncio.sleep(3)
-    for i in range(level):
-        Board[int(Pattern[i])] = squares[5]
-        await Cube.edit(content="".join(Board))
-        await asyncio.sleep(1)
-        Board[int(Pattern[i])] = squares[int(Pattern[i])]
-    await Cube.edit(content="".join(DefBoard))
-    #await ctx.channel.send(str("".join(Colors)))
 
-    msg = await client.wait_for('message')
-    while msg.author != ctx.author:
+
+        await asyncio.sleep(3)
+        await msg.delete()
+        for i in range(level):
+            Board[int(Pattern[i])] = squares[5]
+            await Cube.edit(content="".join(Board))
+            await asyncio.sleep(1)
+            Board[int(Pattern[i])] = squares[int(Pattern[i])]
+        await Cube.edit(content="".join(DefBoard))
+        print("".join(Colors))
+
         msg = await client.wait_for('message')
-    if str(msg.content) == str("".join(Colors)):
-        await ctx.channel.send("Correct. You win!")
-    else:
-        Solution = " ".join(Colors)
-        await ctx.channel.send(f"You lose! The pattern was {Solution}")
+        while msg.author != ctx.author:
+            msg = await client.wait_for('message')
+        if str(msg.content) == str("".join(Colors)):
+            await msg.delete()
+            msg = await ctx.channel.send("Correct. Shuffling the board in 3 seconds")
+            level += 1
+        else:
+            Solution = " ".join(Colors)
+            await ctx.channel.send(f"You lose! The pattern was {Solution}. Final score = {level - 1}")
+            gameLoop = False
+
 
 
 @client.command()
