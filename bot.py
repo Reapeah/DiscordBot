@@ -106,6 +106,12 @@ async def simon(ctx):
             gameLoop = False
 
 
+@client.event
+async def on_voice_state_update(member,before, after):
+    if after.channel == None and str(member.id) == '417039633122328606':
+        channel = client.get_channel(468405218967683073)
+        await channel.send(f"Bye <@{member.id}>")
+
 
 @client.command()
 async def roll(ctx,*args):
