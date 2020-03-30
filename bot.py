@@ -199,7 +199,7 @@ async def hangman(ctx,*args):
                             HiddenMsg += NewMsg[i]
                             LettersLeft -=1
                             if LettersLeft <=0:
-                                await ctx.channel.send("You win")
+                                await win()
                                 return 0
                         else:
                             HiddenMsg += NewMsg[i]
@@ -221,7 +221,7 @@ async def hangman(ctx,*args):
             damage = await ctx.channel.send("Input not allowed")
         await guess.delete()
         await SentWord.edit(content=HiddenMsg)
-        
+
 @client.command()
 async def roll(ctx,*args):
     if len(args) == 2:
