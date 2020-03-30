@@ -114,39 +114,7 @@ async def on_voice_state_update(member,before, after):
 @client.command()
 async def hangman(ctx,*args):
     await ctx.message.delete()
-    #Rules
-    embed = discord.Embed(
-        title = "Begin answer with '-' to make a guess",
-        colour = discord.Colour.blue()
-    )
-    embed.add_field(name=f"**Single letter guess**", value=f"**-# ---> # has to be an alphanumeric character**", inline= False)
-    embed.add_field(name=f"**Full sentence guess ####**", value=f"**-guess # ---># must match the entire sentence,if wrong instant loss**", inline= False)
-    await ctx.channel.send(embed=embed)
-
-
-    #Block dedicated to creating needed variables and lists
-    used = None
-    Failure = ''
-    Health = 3
-    GameLoop = True
-    UsedLetters = []
-    Emotes = ['🌀','➖'] #Fill in blank positions
-    NewMsg = [] #Used to edit message after guesses
-    AllowedInput = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0']
-    EmotesInput = ['🇦','🇧','🇨','🇩','🇪','🇫','🇬','🇭','🇮','🇯','🇰','🇱','🇲','🇳','🇴','🇵','🇶','🇷','🇸','🇹','🇺','🇻','🇼','🇽','🇾','🇿',"1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","0️⃣"]
-
-    #Block dedicated to getting and sorting user input
-    Input = " ".join(args)  #Get the full input
-    sentence = (Input[2:len(Input)-2]).upper().strip() #Remove ||
-    LettersLeft = len((sentence.replace(" ","")))
-
-    #Fill out the final sentence with emotes , sent after HP = 0
-    for i in range(len(sentence)):
-        if sentence[i] != ' ':
-            Failure += EmotesInput[AllowedInput.index(sentence[i].upper())] + ' '
-        else:
-            Failure += Emotes[1]
-
+    #Functions
     #Winning function
     async def win():
         await SentWord.edit(content=Failure)
@@ -156,10 +124,68 @@ async def hangman(ctx,*args):
     async def lose():
         if used:
             await used.delete()
-        await damage.delete()
+        await guess.delete()
         await ctx.channel.send("Incorrect guess. Game Over")
         await SentWord.edit(content=Failure)
         return 0
+    #Input sorting function
+    async def checkInput(Input,AllowedInput):
+        Input = Input.strip()
+        if Input[0] == '|' and Input[1] == '|' and Input[len(Input)-1] == '|' and Input[len(Input)-2] == '|':
+            for i in range(2,len(Input)-2):
+                print(Input[i])
+                if Input[i].upper() not in AllowedInput and Input[i] != ' ':
+                    return False
+            return True
+        else:
+            return False
+    #Hangman Pictures
+    HangmanPic = [
+    'https://upload.wikimedia.org/wikipedia/commons/8/8b/Hangman-0.png',
+    'https://upload.wikimedia.org/wikipedia/commons/3/30/Hangman-1.png',
+    'https://upload.wikimedia.org/wikipedia/commons/7/70/Hangman-2.png',
+    'https://upload.wikimedia.org/wikipedia/commons/9/97/Hangman-3.png',
+    'https://upload.wikimedia.org/wikipedia/commons/2/27/Hangman-4.png',
+    'https://upload.wikimedia.org/wikipedia/commons/6/6b/Hangman-5.png',
+    'https://upload.wikimedia.org/wikipedia/commons/d/d6/Hangman-6.png'
+    ]
+    #Rules
+    Health = 0
+    embed = discord.Embed(
+        colour = discord.Colour.blue()
+    )
+    embed.set_thumbnail(url=f"https://upload.wikimedia.org/wikipedia/commons/8/8b/Hangman-{Health}.png")
+
+
+    #Block dedicated to creating needed variables and lists
+    used = None
+    Failure = ''
+    GameLoop = True
+    UsedLetters = []
+    Emotes = ['🌀','➖'] #Fill in blank positions
+    NewMsg = [] #Used to edit message after guesses
+    UsedMsg = '**USED CHARACTERS: ** '
+    AllowedInput = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0']
+    EmotesInput = ['🇦','🇧','🇨','🇩','🇪','🇫','🇬','🇭','🇮','🇯','🇰','🇱','🇲','🇳','🇴','🇵','🇶','🇷','🇸','🇹','🇺','🇻','🇼','🇽','🇾','🇿',"1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","0️⃣"]
+
+    #Block dedicated to getting and sorting user input
+    Input = " ".join(args)  #Get the full input
+    if await checkInput(Input,AllowedInput):
+        sentence = Input[2:len(Input)-2].upper() #Remove ||
+        LettersLeft = len((sentence.replace(" ","")))
+    else:
+        await ctx.channel.send("```Incorrect input, proper input --> ||The sentence you want to send||```")
+        return 0
+
+
+    #Fill out the final sentence with emotes , sent after HP = 0
+    for i in range(len(sentence)):
+        if sentence[i] != ' ':
+            Failure += EmotesInput[AllowedInput.index(sentence[i].upper())] + ' '
+        else:
+            Failure += Emotes[1]
+
+
     #Code the message using emojis
     HiddenMsg = ''
     for i in range(len(sentence)):
@@ -167,16 +193,14 @@ async def hangman(ctx,*args):
             HiddenMsg += Emotes[1]
         else:
             HiddenMsg += Emotes[0]
+    Rules = await ctx.channel.send(embed=embed)
     SentWord = await ctx.channel.send(HiddenMsg)
-
-    damage = await ctx.channel.send(f"Starting HP is {Health}")
-
+    UsedL = await ctx.channel.send(UsedMsg)
     #Game Loop
     while GameLoop:
         guess = await client.wait_for('message')
         while guess.content.startswith("-") is False:
             guess = await client.wait_for('message')
-
         #Check if guess is in the sentence
         if guess.content.upper().startswith("-GUESS"):
             if guess.content.upper()[7:] == sentence:
@@ -185,10 +209,14 @@ async def hangman(ctx,*args):
             else:
                 await lose()
                 return 0
+
+
         if guess.content[1].upper() in AllowedInput and len(guess.content) == 2 :
             if guess.content[1].upper() not in UsedLetters:
                 UsedLetters.append(guess.content[1].upper())
-                await SentWord.add_reaction(EmotesInput[AllowedInput.index(guess.content[1].upper())])
+                UsedMsg += EmotesInput[AllowedInput.index(guess.content[1].upper())] + ' '
+                await UsedL.edit(content=UsedMsg)
+                #await SentWord.add_reaction(EmotesInput[AllowedInput.index(guess.content[1].upper())])
                 if guess.content[1].upper() in sentence:
                     for i in range(len(HiddenMsg)):
                         NewMsg.append(HiddenMsg[i])
@@ -199,29 +227,29 @@ async def hangman(ctx,*args):
                             HiddenMsg += NewMsg[i]
                             LettersLeft -=1
                             if LettersLeft <=0:
-                                await win()
+                                await ctx.channel.send("You win")
                                 return 0
                         else:
                             HiddenMsg += NewMsg[i]
 
                 else:
-                    Health -= 1
-                    if Health <= 0:
+                    Health += 1
+                    if Health >= 6:
+                        embed.set_thumbnail(url=f"{HangmanPic[Health]}")
+                        await Rules.edit(embed=embed)
                         await lose()
                         return 0
                     else:
-                        await damage.delete()
-                        damage = await ctx.channel.send(f"{guess.content[1].upper()} is not in the sentence. {Health} HP remaining")
+
+                        embed.set_thumbnail(url=f"{HangmanPic[Health]}")
+                        await Rules.edit(embed=embed)
             else:
                 if used:
                     await used.delete()
                 used = await ctx.channel.send(f"{guess.content[1].upper()} has been used before")
-        else:
-            await damage.delete()
-            damage = await ctx.channel.send("Input not allowed")
+
         await guess.delete()
         await SentWord.edit(content=HiddenMsg)
-
 @client.command()
 async def roll(ctx,*args):
     if len(args) == 2:
