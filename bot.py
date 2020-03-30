@@ -111,8 +111,117 @@ async def on_voice_state_update(member,before, after):
     if after.channel == None and str(member.id) == '417039633122328606':
         channel = client.get_channel(468405218967683073)
         await channel.send(f"Bye <@{member.id}>")
+@client.command()
+async def hangman(ctx,*args):
+    await ctx.message.delete()
+    #Rules
+    embed = discord.Embed(
+        title = "Begin answer with '-' to make a guess",
+        colour = discord.Colour.blue()
+    )
+    embed.add_field(name=f"**Single letter guess**", value=f"**-# ---> # has to be an alphanumeric character**", inline= False)
+    embed.add_field(name=f"**Full sentence guess ####**", value=f"**-guess # ---># must match the entire sentence,if wrong instant loss**", inline= False)
+    await ctx.channel.send(embed=embed)
 
 
+    #Block dedicated to creating needed variables and lists
+    used = None
+    Failure = ''
+    Health = 3
+    GameLoop = True
+    UsedLetters = []
+    Emotes = ['🌀','➖'] #Fill in blank positions
+    NewMsg = [] #Used to edit message after guesses
+    AllowedInput = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0']
+    EmotesInput = ['🇦','🇧','🇨','🇩','🇪','🇫','🇬','🇭','🇮','🇯','🇰','🇱','🇲','🇳','🇴','🇵','🇶','🇷','🇸','🇹','🇺','🇻','🇼','🇽','🇾','🇿',"1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","0️⃣"]
+
+    #Block dedicated to getting and sorting user input
+    Input = " ".join(args)  #Get the full input
+    sentence = (Input[2:len(Input)-2]).upper().strip() #Remove ||
+    LettersLeft = len((sentence.replace(" ","")))
+
+    #Fill out the final sentence with emotes , sent after HP = 0
+    for i in range(len(sentence)):
+        if sentence[i] != ' ':
+            Failure += EmotesInput[AllowedInput.index(sentence[i].upper())] + ' '
+        else:
+            Failure += Emotes[1]
+
+    #Winning function
+    async def win():
+        await SentWord.edit(content=Failure)
+        await ctx.channel.send("You win")
+        return 0
+    #Losing function
+    async def lose():
+        if used:
+            await used.delete()
+        await damage.delete()
+        await ctx.channel.send("Incorrect guess. Game Over")
+        await SentWord.edit(content=Failure)
+        return 0
+    #Code the message using emojis
+    HiddenMsg = ''
+    for i in range(len(sentence)):
+        if sentence[i] == ' ':
+            HiddenMsg += Emotes[1]
+        else:
+            HiddenMsg += Emotes[0]
+    SentWord = await ctx.channel.send(HiddenMsg)
+
+    damage = await ctx.channel.send(f"Starting HP is {Health}")
+
+    #Game Loop
+    while GameLoop:
+        guess = await client.wait_for('message')
+        while guess.content.startswith("-") is False:
+            guess = await client.wait_for('message')
+
+        #Check if guess is in the sentence
+        if guess.content.upper().startswith("-GUESS"):
+            if guess.content.upper()[7:] == sentence:
+                await win()
+                return 0
+            else:
+                await lose()
+                return 0
+        if guess.content[1].upper() in AllowedInput and len(guess.content) == 2 :
+            if guess.content[1].upper() not in UsedLetters:
+                UsedLetters.append(guess.content[1].upper())
+                await SentWord.add_reaction(EmotesInput[AllowedInput.index(guess.content[1].upper())])
+                if guess.content[1].upper() in sentence:
+                    for i in range(len(HiddenMsg)):
+                        NewMsg.append(HiddenMsg[i])
+                    HiddenMsg = ''
+                    for i in range(len(sentence)):
+                        if guess.content[1].upper() == sentence[i]:
+                            NewMsg[i] = EmotesInput[AllowedInput.index(guess.content[1].upper())] + ' '
+                            HiddenMsg += NewMsg[i]
+                            LettersLeft -=1
+                            if LettersLeft <=0:
+                                await ctx.channel.send("You win")
+                                return 0
+                        else:
+                            HiddenMsg += NewMsg[i]
+
+                else:
+                    Health -= 1
+                    if Health <= 0:
+                        await lose()
+                        return 0
+                    else:
+                        await damage.delete()
+                        damage = await ctx.channel.send(f"{guess.content[1].upper()} is not in the sentence. {Health} HP remaining")
+            else:
+                if used:
+                    await used.delete()
+                used = await ctx.channel.send(f"{guess.content[1].upper()} has been used before")
+        else:
+            await damage.delete()
+            damage = await ctx.channel.send("Input not allowed")
+        await guess.delete()
+        await SentWord.edit(content=HiddenMsg)
+        
 @client.command()
 async def roll(ctx,*args):
     if len(args) == 2:
