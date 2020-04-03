@@ -310,9 +310,8 @@ async def on_message(message):
 async def on_member_update(before,after):
     server = client.get_guild(212958936972656640)
     if before.guild == server:
-        if before.guild == server:
-            if after.nick != "ivan" and after.id == 157558511692283904:
-                await after.edit(nick="ivan")
+        if after.nick != "ivan" and after.id == 157558511692283904:
+            await after.edit(nick="ivan")
         if before.status != after.status:
             Time = datetime.datetime.now()
             minute = Time.minute if Time.minute >= 10 else '0' + str(Time.minute)
