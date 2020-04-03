@@ -310,6 +310,7 @@ async def on_message(message):
 async def on_member_update(before,after):
     server = client.get_guild(212958936972656640)
     if before.guild == server:
+        print(after.nick)
         if after.nick != "ivan" and after.id == 157558511692283904:
             await after.edit(nick="ivan")
         if before.status != after.status:
