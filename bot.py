@@ -49,7 +49,7 @@ async def on_ready():
 
 @client.command()
 async def cs(ctx):
-    msg = await ctx.channel.send("<@&691037783074144296> cs?")
+    msg = await ctx.channel.send("<@&691037783074144296>cs?")
     await msg.add_reaction('🇾')
     await msg.add_reaction('🇳')
 
