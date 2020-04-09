@@ -109,9 +109,9 @@ async def simon(ctx):
 
 @client.event
 async def on_voice_state_update(member,before, after):
-    if after.channel.id == 695365204057391105 and member.id == 157558511692283904:
+    if after.channel.id == 695365204057391105 and before.channel.id != 695365204057391105 and member.id == 157558511692283904:
         await after.channel.edit(name='biuk is here')
-    if before.channel.id == 695365204057391105 and member.id == 157558511692283904:
+    if before.channel.id == 695365204057391105 and after.channel.id != 695365204057391105 and member.id == 157558511692283904:
         await before.channel.edit(name='biuk is not here')
     if after.channel == None and str(member.id) == '150335981961216000':
         channel = client.get_channel(417039633122328606)
