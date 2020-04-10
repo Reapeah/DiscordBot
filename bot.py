@@ -109,7 +109,7 @@ async def simon(ctx):
 
 @client.event
 async def on_voice_state_update(member,before, after):
-    if member.id == 150335981961216000 or member.id == 205453758069473280 and after.channel == None:
+    if member.id == 150335981961216000  and after.channel == None:
         channel = client.get_channel(417039633122328606)
         await channel.send(f"Bye <@{member.id}>")
     if after.channel != None:
