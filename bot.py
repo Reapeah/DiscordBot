@@ -111,7 +111,7 @@ async def simon(ctx):
 async def on_voice_state_update(member,before,after):
     check = False
     biuk_kanal = 695365204057391105
-    biuk = 268579042066825220
+    biuk = 157558511692283904
     dario = 150335981961216000
     milas = 205453758069473280
     enis = 417039633122328606
@@ -127,6 +127,7 @@ async def on_voice_state_update(member,before,after):
         for member in members:
             if member.id == biuk:
                 check = True
+        print(check)
         if check and voice_client.name != 'biuk is here':
             await voice_client.edit(name='biuk is here')
         elif check is False and voice_client.name == 'biuk is here':
