@@ -110,7 +110,7 @@ async def simon(ctx):
 @client.event
 async def on_voice_state_update(member,before,after):
     check = False
-    biuk_kanal = 478587215677620230
+    biuk_kanal = 695365204057391105
     biuk = 268579042066825220
     dario = 150335981961216000
     milas = 205453758069473280
