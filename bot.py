@@ -108,26 +108,41 @@ async def simon(ctx):
 
 
 @client.event
-async def on_voice_state_update(member,before, after):
-    if member.id == 150335981961216000  and after.channel == None:
-        channel = client.get_channel(417039633122328606)
+async def on_voice_state_update(member,before,after):
+    check = False
+    biuk_kanal = 478587215677620230
+    biuk = 268579042066825220
+    dario = 150335981961216000
+    milas = 205453758069473280
+    enis = 417039633122328606
+    voice_client = client.get_channel(biuk_kanal)
+
+    if after.channel == None and (member.id == dario or member.id == milas):
+        channel = client.get_channel(enis)
+        #channel = client.get_channel(286178277985484801)
         await channel.send(f"Bye <@{member.id}>")
-    if after.channel != None:
-        if after.channel.id == 695365204057391105 and before.channel.id != 695365204057391105 and member.id == 157558511692283904:
-            await after.channel.edit(name='biuk is here')
-        if before.channel.id == 695365204057391105 and after.channel.id != 695365204057391105 and member.id == 157558511692283904:
-            await before.channel.edit(name='biuk is not here')
-        if after.channel.id == 695365204057391105 and member.nick != 'biuk':
-            pastNick = member.nick
-            username = member
-            await member.edit(nick='biuk')
-            await client.wait_for('voice_state_update')
-            while True:
-                if member == username and after.channel == None or after.channel.id != 695365204057391105:
-                    await member.edit(nick=pastNick)
-                    break
-                else:
-                    await client.wait_for('voice_state_update')
+
+    if (after.channel != None and after.channel.id == biuk_kanal) or (before.channel != None and (after.channel == None or after.channel.id != biuk_kanal)):
+        members = voice_client.members
+        for member in members:
+            if member.id == biuk:
+                check = True
+        if check and voice_client.name != 'biuk is here':
+            await voice_client.edit(name='biuk is here')
+        elif check is False and voice_client.name == 'biuk is here':
+            await voice_client.edit(name='biuk is not here')
+
+    if after.channel != None and after.channel.id == biuk_kanal and member.nick != 'biuk':
+        pastNick = member.nick
+        username = member
+        await member.edit(nick='biuk')
+        await client.wait_for('voice_state_update')
+        while True:
+            if member == username and after.channel == None or after.channel.id != biuk_kanal:
+                await member.edit(nick=pastNick)
+                break
+            else:
+                await client.wait_for('voice_state_update')
 @client.command()
 async def hangman(ctx,*args):
     await ctx.message.delete()
