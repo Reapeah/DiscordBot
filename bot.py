@@ -119,7 +119,7 @@ async def on_voice_state_update(member,before,after):
     enis = 417039633122328606
     voice_client = client.get_channel(biuk_kanal)
 
-    if after.channel == None and (member.id == dario or member.id == milas):
+    if after.channel == None and (member.id == dario or member.id == milas or member.id == tristo):
         channel = client.get_channel(enis)
         #channel = client.get_channel(286178277985484801)
         await channel.send(f"Bye <@{member.id}>")
@@ -331,11 +331,11 @@ async def on_message(message):
         await channel.send("Do it pussy you won't")
     if message.content.upper() == 'MA':
         await channel.send("ma mia")
-    if message.content.startswith("I'm ") or message.content.startswith("I am "):
-        if message.content.startswith("I'm "):
-            await channel.send(f"Hi {str(message.content)[4:]}! I'm Dad <:peepoDab:639947762120785930>")
-        else:
-            await channel.send(f"Hi {str(message.content)[5:]}! I'm Dad <:peepoDab:639947762120785930>")
+    # if message.content.startswith("I'm ") or message.content.startswith("I am "):
+    #     if message.content.startswith("I'm "):
+    #         await channel.send(f"Hi {str(message.content)[4:]}! I'm Dad <:peepoDab:639947762120785930>")
+    #     else:
+    #         await channel.send(f"Hi {str(message.content)[5:]}! I'm Dad <:peepoDab:639947762120785930>")
     if 'ocelto' in message.content and ':ocelto:' not in message.content:
         await channel.send("<:ocelto:501865489442799616>")
     await client.process_commands(message)
