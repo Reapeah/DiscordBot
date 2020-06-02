@@ -591,12 +591,16 @@ async def TTT(ctx):
 
 @client.command()
 async def countdown(ctx,message):
+    tristo = 178210330399211520
     try:
         Time = float(message)
         Msg = await ctx.channel.send(f"Countdown of {Time} minute(s) has started")
         await asyncio.sleep(float(Time)*60)
         await Msg.delete()
-        await ctx.channel.send(f"<@{ctx.author.id}> - Countdown of {Time} minute(s) has ended!")
+        if ctx.author.id == tristo:
+            await ctx.channel.send(f"Countdown of {Time} minute(s) has ended! Dobar tek <@{ctx.author.id}>")
+        else:
+            await ctx.channel.send(f"<@{ctx.author.id}> - Countdown of {Time} minute(s) has ended! ")
     except:
         await ctx.channel.send("Invalid input")
 
