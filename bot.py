@@ -464,7 +464,7 @@ async def on_reaction_add(reaction,user):
     tristo = 178210330399211520
     message = reaction.message
     ignored =  ["✉️","🐺"]
-    if reaction.emoji not in ignored and user.id = tristo:
+    if reaction.emoji not in ignored and user.id == tristo:
         await message.add_reaction(reaction.emoji)
     if reaction.emoji == "🐺":
         await reaction.message.channel.send(OwO(str(reaction.message.content)))
