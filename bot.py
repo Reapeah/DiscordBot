@@ -461,7 +461,7 @@ async def poll(ctx):
 
 @client.event
 async def on_reaction_add(reaction,user):
-    tristo = 178210330399211520
+    tristo = 1782103303992115207777777
     message = reaction.message
     ignored =  ["✉️","🐺"]
     if reaction.emoji not in ignored and user.id == tristo:
