@@ -110,7 +110,7 @@ async def simon(ctx):
 @client.event
 async def on_voice_state_update(member,before,after):
     check = False
-    biuk_kanal = 695365204057391105
+    biuk_kanal = 757706472439414804
     tristo = 178210330399211520
     dome = 194112707027271680
     biuk = 157558511692283904
@@ -342,7 +342,6 @@ async def on_message(message):
 
 @client.event
 async def on_member_update(before,after):
-    print("works")
     server = client.get_guild(212958936972656640)
     if before.guild == server:
         #print(after.nick)
@@ -462,6 +461,7 @@ async def poll(ctx):
 
 @client.event
 async def on_reaction_add(reaction,user):
+    print(user.id)
     message = reaction.message
     ignored =  ["✉️","🐺"]
     if reaction.emoji not in ignored:
