@@ -337,7 +337,7 @@ async def on_message(message):
     #     else:
     #         await channel.send(f"Hi {str(message.content)[5:]}! I'm Dad <:peepoDab:639947762120785930>")
     if 'ocelto' in message.content and ':ocelto:' not in message.content:
-        await channel.send("<:ocelto:501865489442799616>")
+        await channel.send("<:ocelto:501867638872342568>")
     await client.process_commands(message)
 
 @client.event
